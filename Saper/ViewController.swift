@@ -114,7 +114,6 @@ class ViewController: UIViewController {
 			flag.setColor(color: .white)
 		} else {
 			flag.setColor(color: .red)
-			print(typePress)
 		}
 	}
 
