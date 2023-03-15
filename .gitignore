@@ -20,4 +20,5 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+*.xcodeproj
 project.xcworkspace
