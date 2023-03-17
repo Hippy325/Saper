@@ -84,7 +84,7 @@ extension Matrix {
 		number = algoritm.main(position: position, matrix: matrix)
 		return number
 	}
-	
+
 	private func random(countC: Int, countB: Int) -> State {
 		let value = Int.random(in: 0...countC)
 		if value <= countB {

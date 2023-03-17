@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class Cell: UIButton {
-
+	private var isClicked: Bool = false
 	private weak var liaison: ILiaison?
 	private let shapeLayer = CAShapeLayer()
 	convenience init(tag: Int, liaison: ILiaison) {
@@ -33,6 +33,7 @@ final class Cell: UIButton {
 	}
 
 	func actionChange(state: Int?) {
+		isClicked = true
 		guard let state = state else {
 			self.backgroundColor = .red
 			return
@@ -62,6 +63,11 @@ final class Cell: UIButton {
 		layer.borderWidth = 5
 		self.setTitle("", for: .normal)
 		self.isEnabled = true
+		isClicked = false
+	}
+
+	func clicked() -> Bool {
+		return isClicked
 	}
 
 	func flag() {

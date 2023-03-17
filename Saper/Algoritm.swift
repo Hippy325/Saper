@@ -10,7 +10,7 @@ import Foundation
 
 final class Algoritm {
 	private var number: Int = 0
-	func main(position: Int, matrix: [State]) -> Int{
+	func main(position: Int, matrix: [State]) -> Int {
 		if position < 11 {
 			leftSide(position: position, matrix: matrix)
 		}

@@ -80,14 +80,25 @@ final class Liaison: ILiaison {
 	private func pressOpen(position: Int) {
 		countPress += 1
 		let state = matrix?.getMatrix()[position]
+		arrayCell[position].actionChange(state: state)
 		if state == nil {
 			presenter?.stopTimer(isWin: false)
 			arrayCell.forEach { (cell) in
 				cell.layer.borderWidth = 0
 				cell.isEnabled = false
 			}
+			return
 		}
-		arrayCell[position].actionChange(state: state)
+		if state == 0 {
+			let algoritmOpen = AlgoritmOpen()
+			algoritmOpen.open(startPosition: position) { (position) in
+				if !arrayCell[position].clicked() {
+					arrayCell[position].actionChange(state: matrix?.getMatrix()[position])
+					countPress += 1
+				}
+				print(countPress)
+			}
+		}
 		guard let countCellAndBomb = countCellAndBomb else { return }
 		if countPress == (countCellAndBomb.0 - countCellAndBomb.1) {
 			arrayCell.forEach { (cell) in
