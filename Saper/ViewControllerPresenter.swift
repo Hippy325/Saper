@@ -9,11 +9,9 @@ import Foundation
 
 protocol IViewControllerPresenter {
 	func setCountBombAndCell(cell: Int, bomb: Int)
-	func getCountCellAndBomb() -> (Int, Int)
 	func newField()
 	func newMatrix()
 	func changeType() -> Bool
-	func getCurrentCountBomb() -> Int
 }
 
 protocol IPresenterView: AnyObject {

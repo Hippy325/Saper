@@ -25,16 +25,16 @@ protocol IliaisonMatrix {
 	func changePress() -> Bool
 }
 
-final class Liaison: ILiaison {
-	private enum TypePress {
-		case flag
-		case opened
-		case unopened
-	}
+enum TypePress {
+	case flag
+	case opened
+	case unopened
+}
 
+final class Liaison: ILiaison {
 	private var arrayCell: [Cell] = []
 	private var arrayTap: [TypePress] = []
-	private var matrix: IMatrix?
+	private var matrix: IMatrix = Matrix(countBomb: 10, countCell: 77)
 	private weak var presenter: ILiaisonPresenter?
 	private var countCellAndBomb: (Int, Int)?
 	private var isNew: Bool = true
@@ -48,7 +48,7 @@ final class Liaison: ILiaison {
 
 	func notification(position: Int) {
 		if isNew {
-			matrix?.createNewMatrix(startPosition: position)
+			matrix.createNewMatrix(startPosition: position)
 			presenter?.startTimer()
 		}
 
@@ -79,7 +79,7 @@ final class Liaison: ILiaison {
 
 	private func pressOpen(position: Int) {
 		countPress += 1
-		let state = matrix?.getMatrix()[position]
+		let state = matrix.getMatrix()[position]
 		arrayCell[position].actionChange(state: state)
 		if state == nil {
 			presenter?.stopTimer(isWin: false)
@@ -93,7 +93,8 @@ final class Liaison: ILiaison {
 			let algoritmOpen = AlgoritmOpen()
 			algoritmOpen.open(startPosition: position) { (position) in
 				if !arrayCell[position].clicked() {
-					arrayCell[position].actionChange(state: matrix?.getMatrix()[position])
+					arrayCell[position].actionChange(state: matrix.getMatrix()[position])
+					arrayTap[position] = .opened
 					countPress += 1
 				}
 				print(countPress)
@@ -130,7 +131,6 @@ extension Liaison: IliaisonMatrix {
 	}
 
 	func getField() -> [Int?] {
-		guard let matrix = matrix else { return [] }
 		return matrix.getMatrix()
 	}
 
