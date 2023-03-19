@@ -16,6 +16,6 @@ extension DBFieldSnapshot {
     @NSManaged var snapshot: Snapshot?
 }
 
-extension DBFieldSnapshot : Identifiable {
+extension DBFieldSnapshot: Identifiable {
 
 }

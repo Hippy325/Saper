@@ -18,6 +18,6 @@ extension DBMatrix {
     @NSManaged var field: Field?
 }
 
-extension DBMatrix : Identifiable {
+extension DBMatrix: Identifiable {
 
 }
