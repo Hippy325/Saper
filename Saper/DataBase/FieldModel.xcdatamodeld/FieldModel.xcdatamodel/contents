@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="19H1309" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="DBFieldSnapshot" representedClassName="DBFieldSnapshot" syncable="YES">
+        <attribute name="snapshot" optional="YES" attributeType="Transformable"/>
+    </entity>
+    <entity name="DBMatrix" representedClassName="DBMatrix" syncable="YES">
+        <attribute name="countBomb" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="countCell" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="field" optional="YES" attributeType="Transformable"/>
+    </entity>
+    <elements>
+        <element name="DBMatrix" positionX="-54" positionY="-9" width="128" height="88"/>
+        <element name="DBFieldSnapshot" positionX="-36" positionY="18" width="128" height="58"/>
+    </elements>
+</model>
