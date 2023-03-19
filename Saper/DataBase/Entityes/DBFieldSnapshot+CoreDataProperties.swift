@@ -10,13 +10,10 @@ import Foundation
 import CoreData
 
 extension DBFieldSnapshot {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<DBFieldSnapshot> {
         return NSFetchRequest<DBFieldSnapshot>(entityName: "DBFieldSnapshot")
     }
-
     @NSManaged var snapshot: Snapshot?
-
 }
 
 extension DBFieldSnapshot : Identifiable {

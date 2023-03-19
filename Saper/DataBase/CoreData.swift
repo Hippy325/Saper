@@ -83,10 +83,37 @@ final class DBCoreData: IDBForApp {
 	}
 
 	func getField() -> [Int?] {
-		return []
+		let request: NSFetchRequest<DBMatrix> = DBMatrix.fetchRequest()
+		do {
+			matrix = try context.fetch(request)[0]
+		} catch let error {
+			print(error)
+		}
+		guard let field = matrix.field else { return [] }
+
+		return field.field
 	}
 
 	func saveField(field: [Int?]) {
+		do {
+			context.delete(matrix)
+			try context.save()
+		} catch let error {
+			print(error)
+		}
 
+		guard let entity = NSEntityDescription.entity(forEntityName: "DBMatrix", in: context) else { return }
+		let matrix = DBMatrix(entity: entity, insertInto: context)
+		let fieldMatrix = Field()
+		fieldMatrix.field = field
+		matrix.countCell = self.matrix.countCell
+		matrix.countBomb = self.matrix.countBomb
+		matrix.field = fieldMatrix
+		do {
+			try context.save()
+			self.matrix = matrix
+		} catch let error {
+			print(error)
+		}
 	}
 }
