@@ -20,8 +20,9 @@ protocol IDBForLiaison {
 	func getFieldSnapshot() -> [TypePress]
 }
 
-final class DBCoreData {
+final class DBCoreData: IDBForApp {
 	// MARK: - Core Data stack
+	private var matrix: DBMatrix = DBMatrix()
 	private lazy var context = persistentContainer.viewContext
 	private lazy var persistentContainer: NSPersistentContainer = {
 
@@ -47,5 +48,45 @@ final class DBCoreData {
 				fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
 			}
 		}
+	}
+
+	func getCountCellAndBomb() -> (Int, Int) {
+		let request: NSFetchRequest<DBMatrix> = DBMatrix.fetchRequest()
+		do {
+			matrix = try context.fetch(request)[0]
+		} catch let error {
+			print(error)
+		}
+
+		return (Int(matrix.countCell), Int(matrix.countBomb))
+	}
+
+	func saveCountCellAndBomb(cell: Int, bomb: Int) {
+		do {
+			context.delete(matrix)
+			try context.save()
+		} catch let error {
+			print(error)
+		}
+
+		guard let entity = NSEntityDescription.entity(forEntityName: "DBMatrix", in: context) else { return }
+		let matrix = DBMatrix(entity: entity, insertInto: context)
+		matrix.countCell = Int32(cell)
+		matrix.countBomb = Int32(bomb)
+
+		do {
+			try context.save()
+			self.matrix = matrix
+		} catch let error {
+			print(error)
+		}
+	}
+
+	func getField() -> [Int?] {
+		return []
+	}
+
+	func saveField(field: [Int?]) {
+
 	}
 }
