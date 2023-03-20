@@ -33,6 +33,7 @@ enum TypePress {
 }
 
 final class Liaison: ILiaison {
+	private let dataBase: IDBForApp
 	private var arrayCell: [Cell] = []
 	private var arrayTap: [TypePress] = []
 	private var matrix: IMatrix = Matrix(countBomb: 10, countCell: 77)
@@ -41,6 +42,10 @@ final class Liaison: ILiaison {
 	private var isNew: Bool = true
 	private var countPress: Int = 0
 	private var typePress: Bool = false
+
+	init(dataBase: IDBForApp) {
+		self.dataBase = dataBase
+	}
 
 	func appendCell(cell: Cell) {
 		arrayCell.append(cell)
@@ -51,6 +56,7 @@ final class Liaison: ILiaison {
 		if isNew {
 			matrix.createNewMatrix(startPosition: position)
 			presenter?.startTimer()
+			dataBase.saveField(field: matrix.getMatrix())
 		}
 
 		if !typePress || isNew {
@@ -80,7 +86,7 @@ final class Liaison: ILiaison {
 
 	private func pressOpen(position: Int) {
 		countPress += 1
-		let state = matrix.getMatrix()[position]
+		let state = getField()[position]
 		arrayCell[position].actionChange(state: state)
 		if state == nil {
 			presenter?.stopTimer(isWin: false)
@@ -94,7 +100,7 @@ final class Liaison: ILiaison {
 			let algoritmOpen = AlgoritmOpen()
 			algoritmOpen.open(startPosition: position) { (position) in
 				if !arrayCell[position].clicked() {
-					arrayCell[position].actionChange(state: matrix.getMatrix()[position])
+					arrayCell[position].actionChange(state: getField()[position])
 					arrayTap[position] = .opened
 					countPress += 1
 				}
@@ -134,12 +140,13 @@ extension Liaison: IliaisonMatrix {
 	}
 
 	func getField() -> [Int?] {
-		return matrix.getMatrix()
+		return dataBase.getField()
 	}
 
 	func newMatrix(countCell: Int, countBomb: Int) {
 		self.matrix = Matrix(countBomb: countBomb, countCell: countCell)
 		self.countCellAndBomb = (countCell, countBomb)
+		dataBase.saveCountCellAndBomb(cell: countCell, bomb: countBomb)
 	}
 
 	func changePress() -> Bool {

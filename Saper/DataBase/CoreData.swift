@@ -26,7 +26,7 @@ final class DBCoreData: IDBForApp {
 	private lazy var context = persistentContainer.viewContext
 	private lazy var persistentContainer: NSPersistentContainer = {
 
-		let container = NSPersistentContainer(name: "Saper")
+		let container = NSPersistentContainer(name: "FieldModel")
 		container.loadPersistentStores(completionHandler: { (_, error) in
 			if let error = error as NSError? {
 

@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		willConnectTo session: UISceneSession,
 		options connectionOptions: UIScene.ConnectionOptions
 	) {
-		let lision = Liaison()
+		let coreData = DBCoreData()
+		let lision = Liaison(dataBase: coreData)
 		let creator = CreatingCells(liaison: lision)
 		let creatingStackView = CreatingStackView(creatingCells: creator)
 		let presenter = ViewControllerPresenter(liaison: lision)
