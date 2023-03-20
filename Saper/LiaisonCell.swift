@@ -11,6 +11,7 @@ protocol ILiaisonPresenter: AnyObject {
 	func stopTimer(isWin: Bool)
 	func counterBombDec()
 	func counterBombInc()
+	func countBombStart(count: Int)
 }
 
 protocol ILiaison: AnyObject {
@@ -119,6 +120,8 @@ extension Liaison: IliaisonMatrix {
 		isNew = true
 		countPress = 0
 		presenter?.stopTimer(isWin: false)
+		guard let countCellAndBomb = countCellAndBomb else { return }
+		presenter?.countBombStart(count: countCellAndBomb.1)
 
 		for index in 0...arrayTap.count - 1 {
 			arrayTap[index] = .unopened

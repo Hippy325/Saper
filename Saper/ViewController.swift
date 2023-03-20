@@ -41,12 +41,10 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .black
-		presenter.setCountBombAndCell(cell: 77, bomb: 10)
-		presenter.newMatrix()
+		presenter.newMatrix(cell: 77, bomb: 10)
 		setupTopView()
 		setupSubviews()
 		setupPlaingView()
-		creatingStackView.creatingHoririsontalyStacks(view: plaingView, count: 77)
 	}
 
 // MARK: - setup all View and subview
@@ -204,5 +202,9 @@ extension ViewController: IPresenterView {
 			timeString = "00\(time)"
 		}
 		self.subviews.timer.text = timeString
+	}
+
+	func updatePlaingView(countCell: Int) {
+		creatingStackView.creatingHoririsontalyStacks(view: plaingView, count: countCell)
 	}
 }

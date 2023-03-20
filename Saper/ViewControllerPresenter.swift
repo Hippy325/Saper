@@ -8,20 +8,18 @@
 import Foundation
 
 protocol IViewControllerPresenter {
-	func setCountBombAndCell(cell: Int, bomb: Int)
 	func newField()
-	func newMatrix()
+	func newMatrix(cell: Int, bomb: Int)
 	func changeType() -> Bool
 }
 
 protocol IPresenterView: AnyObject {
 	func updateTime(time: Int)
 	func updateCounterBomb(count: Int)
+	func updatePlaingView(countCell: Int)
 }
 
 final class ViewControllerPresenter {
-	private var countBomb: Int = 0
-	private var countCell: Int = 0
 	private var counterBomb: Int = 10 {
 		didSet {
 			view?.updateCounterBomb(count: counterBomb)
@@ -37,22 +35,13 @@ final class ViewControllerPresenter {
 }
 
 extension ViewControllerPresenter: IViewControllerPresenter {
-	func setCountBombAndCell(cell: Int, bomb: Int) {
-		self.countBomb = bomb
-		self.countCell = cell
-	}
-
-	func getCountCellAndBomb() -> (Int, Int) {
-		return (countCell, countBomb)
-	}
-
 	func newField() {
 		liaison.newField()
-		counterBomb = countBomb
 	}
 
-	func newMatrix() {
-		liaison.newMatrix(countCell: countCell, countBomb: countBomb)
+	func newMatrix(cell: Int, bomb: Int) {
+		liaison.newMatrix(countCell: cell, countBomb: bomb)
+		view?.updatePlaingView(countCell: cell)
 	}
 
 	func changeType() -> Bool {
@@ -65,6 +54,10 @@ extension ViewControllerPresenter: IViewControllerPresenter {
 }
 
 extension ViewControllerPresenter: ILiaisonPresenter {
+	func countBombStart(count: Int) {
+		counterBomb = count
+	}
+
 	func counterBombDec() {
 		counterBomb -= 1
 	}
