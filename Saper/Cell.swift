@@ -34,6 +34,7 @@ final class Cell: UIButton {
 
 	func actionChange(state: Int?) {
 		isClicked = true
+		isEnabled = false
 		guard let state = state else {
 			self.backgroundColor = .red
 			return
