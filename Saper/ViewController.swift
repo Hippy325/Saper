@@ -166,7 +166,8 @@ class ViewController: UIViewController {
 		NSLayoutConstraint.activate([
 			plaingView.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 15),
 			plaingView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
-			plaingView.heightAnchor.constraint(equalToConstant: getHeight(width: view.frame.size.width))
+			plaingView.heightAnchor.constraint(equalToConstant: getHeight(width: view.frame.size.width)),
+			plaingView.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
 		])
 	}
 }
