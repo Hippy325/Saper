@@ -56,11 +56,9 @@ final class Matrix: IMatrix {
 	func createNewMatrix(startPosition: Int) {
 		var matematicMatrix: [Int?] = []
 		let stateMatrix: [State] = getStateMatrix(startPosition: startPosition)
-		var counter = 0
-		for _ in 0...(countCell - 1) {
-			let number = numberForMatrix(position: counter, matrix: stateMatrix)
+		for index in 0...(countCell - 1) {
+			let number = numberForMatrix(position: index, matrix: stateMatrix)
 			matematicMatrix.append(number)
-			counter += 1
 		}
 		mainMatrix = matematicMatrix
 	}
@@ -80,8 +78,8 @@ extension Matrix {
 			return nil
 		}
 		var number = 0
-		let algoritm = Algoritm()
-		number = algoritm.main(position: position, matrix: matrix)
+		let algoritm = Algoritm(matrix: matrix, posotion: position)
+		number = algoritm.main()
 		return number
 	}
 
