@@ -16,10 +16,12 @@ class ViewController: UIViewController {
 
 	private let creatingStackView: ICreatingStackView
 	private let presenter: IViewControllerPresenter
+	private let router: IViewControllerRouter
 
-	init(creatingStackView: ICreatingStackView, presenter: IViewControllerPresenter) {
+	init(creatingStackView: ICreatingStackView, presenter: IViewControllerPresenter, router: IViewControllerRouter) {
 		self.creatingStackView = creatingStackView
 		self.presenter = presenter
+		self.router = router
 		super.init(nibName: nil, bundle: nil)
 	}
 	required init?(coder: NSCoder) {
@@ -73,6 +75,8 @@ class ViewController: UIViewController {
 		subviews.typeOfPress.translatesAutoresizingMaskIntoConstraints = false
 
 		subviews.settings.layer.addSublayer(Settings().setings())
+		subviews.settings.addTarget(self, action: #selector(settingsScreen), for: .touchUpInside)
+
 		subviews.restart.layer.addSublayer(Play().play())
 		subviews.restart.backgroundColor = .darkGray
 		subviews.restart.addTarget(self, action: #selector(newField), for: .touchUpInside)
@@ -97,6 +101,10 @@ class ViewController: UIViewController {
 		view.addSubview(plaingView)
 		plaingView.translatesAutoresizingMaskIntoConstraints = false
 		plaingView.backgroundColor = .lightGray
+	}
+
+	@objc func settingsScreen() {
+		router.pushSettingsScreen()
 	}
 
 	@objc

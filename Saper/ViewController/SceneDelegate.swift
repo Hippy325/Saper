@@ -16,14 +16,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		willConnectTo session: UISceneSession,
 		options connectionOptions: UIScene.ConnectionOptions
 	) {
+		let viewConreollerRouter = ViewControllerRouter(settingsViewController: SettingsViewControllerAssembly())
 		let lision = Liaison()
 		let creator = CreatingCells(liaison: lision)
 		let creatingStackView = CreatingStackView(creatingCells: creator)
 		let presenter = ViewControllerPresenter(liaison: lision)
 		lision.setPresenter(presenter: presenter)
 
-		let viewController = ViewController(creatingStackView: creatingStackView, presenter: presenter)
+		let viewController = ViewController(
+			creatingStackView: creatingStackView,
+			presenter: presenter,
+			router: viewConreollerRouter
+		)
 		presenter.view = viewController
+		viewConreollerRouter.viewController = viewController
 
 		guard let scene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(windowScene: scene)
