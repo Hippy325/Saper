@@ -22,11 +22,9 @@ final class SettingsViewController: UIViewController {
 	}
 	private let subviews = Subviews()
 	private let presenter: ISettingsViewControllerPresenter
-	private let router: ISettingsRouter
 
-	init(presenter: ISettingsViewControllerPresenter, router: ISettingsRouter) {
+	init(presenter: ISettingsViewControllerPresenter) {
 		self.presenter = presenter
-		self.router = router
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -224,7 +222,7 @@ private extension SettingsViewController {
 	}
 
 	@objc func closeSettingsScreen() {
-		router.backToPlaingScreen()
+		presenter.backToPlayingScreen()
 	}
 }
 

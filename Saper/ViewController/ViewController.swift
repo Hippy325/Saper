@@ -104,7 +104,7 @@ class ViewController: UIViewController {
 	}
 
 	@objc func settingsScreen() {
-		router.pushSettingsScreen()
+		router.pushSettingsScreen(screen: self)
 	}
 
 	@objc
@@ -215,5 +215,9 @@ extension ViewController: IPresenterView {
 
 	func updatePlaingView(countCell: Int) {
 		creatingStackView.creatingHoririsontalyStacks(view: plaingView, count: countCell)
+	}
+}
+extension ViewController: IGameView {
+	func udatingField(countCell: Int, countBomb: Int, row: Int, collumn: Int) {
 	}
 }

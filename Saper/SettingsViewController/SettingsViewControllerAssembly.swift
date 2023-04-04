@@ -9,15 +9,15 @@ import Foundation
 import UIKit
 
 protocol ISettingsViewControllerAssembly {
-	func assembly() -> UIViewController
+	func assembly(screen: IGameView) -> UIViewController
 }
 
 final class SettingsViewControllerAssembly: ISettingsViewControllerAssembly {
 
-	func assembly() -> UIViewController {
-		let presenter = SettingsViewControllerPresenter()
+	func assembly(screen: IGameView) -> UIViewController {
 		let router = SettingsRouter()
-		let settingsViewController = SettingsViewController(presenter: presenter, router: router)
+		let presenter = SettingsViewControllerPresenter(router: router, playingScreen: screen)
+		let settingsViewController = SettingsViewController(presenter: presenter)
 		presenter.view = settingsViewController
 		router.viewController = settingsViewController
 		return settingsViewController
