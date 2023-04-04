@@ -21,9 +21,9 @@ final class SettingsViewController: UIViewController {
 		let bombDescription = UILabel()
 	}
 	private let subviews = Subviews()
-	private let presenter: ISettingsViewControllerPresenter
+	private let presenter: ISettingsPresenter
 
-	init(presenter: ISettingsViewControllerPresenter) {
+	init(presenter: ISettingsPresenter) {
 		self.presenter = presenter
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -36,9 +36,6 @@ final class SettingsViewController: UIViewController {
 		super.viewDidLoad()
 		view.backgroundColor = .gray
 		setupSubviews()
-	}
-
-	override func viewDidLayoutSubviews() {
 		setupConstraints()
 	}
 }
@@ -69,66 +66,52 @@ private extension SettingsViewController {
 		subviews.complexity.selectedSegmentIndex = 0
 		setActionComplexity()
 		counterSubviews()
+		updateData()
 	}
 
 	private func setActionComplexity() {
 		let actionEasy = UIAction(title: "Easy") { (_) in
-			self.subviews.countCellSlider.setValue(77, animated: true)
-			self.presenter.setCountCell(parametrs: 77)
-			self.subviews.countBombSlider.setValue(10, animated: true)
-			self.presenter.setCountBomb(countBomb: 10)
-			self.subviews.showCountBomb.text = "\(Int(self.subviews.countBombSlider.value))"
+			self.presenter.set(complexityVariant: .easy)
 		}
 		subviews.complexity.setAction(actionEasy, forSegmentAt: 0)
 
 		let actionMedium = UIAction(title: "Medium") { (_) in
-			self.subviews.countCellSlider.setValue(133, animated: true)
-			self.presenter.setCountCell(parametrs: 133)
-			self.subviews.countBombSlider.setValue(40, animated: true)
-			self.presenter.setCountBomb(countBomb: 40)
-			self.subviews.showCountBomb.text = "\(Int(self.subviews.countBombSlider.value))"
+			self.presenter.set(complexityVariant: .medium)
 		}
 		subviews.complexity.setAction(actionMedium, forSegmentAt: 1)
 
 		let actionHard = UIAction(title: "Hard") { (_) in
-			self.subviews.countCellSlider.setValue(188, animated: true)
-			self.presenter.setCountCell(parametrs: 188)
-			self.subviews.countBombSlider.setValue(90, animated: true)
-			self.presenter.setCountBomb(countBomb: 90)
-			self.subviews.showCountBomb.text = "\(Int(self.subviews.countBombSlider.value))"
+			self.presenter.set(complexityVariant: .hard)
 		}
 		subviews.complexity.setAction(actionHard, forSegmentAt: 2)
 
 		let actionExpert = UIAction(title: "Expert") { (_) in
-			self.subviews.countCellSlider.setValue(231, animated: true)
-			self.presenter.setCountCell(parametrs: 231)
-			self.subviews.countBombSlider.setValue(180, animated: true)
-			self.presenter.setCountBomb(countBomb: 180)
-			self.subviews.showCountBomb.text = "\(Int(self.subviews.countBombSlider.value))"
+			self.presenter.set(complexityVariant: .expert)
 		}
 		subviews.complexity.setAction(actionExpert, forSegmentAt: 3)
+		updateData()
 	}
 
 	private func counterSubviews() {
-		presenter.setCountBomb(countBomb: 10)
-		presenter.setCountCell(parametrs: 77)
 		view.addSubview(subviews.countCellSlider)
-		subviews.countCellSlider.maximumValue = 231
-		subviews.countCellSlider.minimumValue = 77
+		subviews.countCellSlider.maximumValue = Float(presenter.cellCountRange.upperBound)
+		subviews.countCellSlider.minimumValue = Float(presenter.cellCountRange.lowerBound)
 		subviews.countCellSlider.thumbTintColor = .black
 		subviews.countCellSlider.tintColor = .black
 		subviews.countCellSlider.maximumTrackTintColor = .blue
 		subviews.countCellSlider.translatesAutoresizingMaskIntoConstraints = false
-		subviews.countCellSlider.addTarget(self, action: #selector(setCountCell), for: .allEvents)
+		subviews.countCellSlider.addTarget(self, action: #selector(updateCellCount), for: .valueChanged)
+		subviews.countCellSlider.addTarget(self, action: #selector(setCountCell), for: .touchDown)
 
 		view.addSubview(subviews.countBombSlider)
-		subviews.countBombSlider.maximumValue =	300
-		subviews.countBombSlider.minimumValue = 10
+		subviews.countBombSlider.maximumValue =	Float(presenter.bombCountRange.upperBound)
+		subviews.countBombSlider.minimumValue = Float(presenter.bombCountRange.lowerBound)
 		subviews.countBombSlider.thumbTintColor = .black
 		subviews.countBombSlider.tintColor = .black
 		subviews.countBombSlider.maximumTrackTintColor = .red
 		subviews.countBombSlider.translatesAutoresizingMaskIntoConstraints = false
-		subviews.countBombSlider.addTarget(self, action: #selector(showCountBombFunc), for: .allEvents)
+		subviews.countBombSlider.addTarget(self, action: #selector(updateBombCount), for: .valueChanged)
+		subviews.countBombSlider.addTarget(self, action: #selector(setCountBomb), for: .touchDown)
 
 		view.addSubview(subviews.cellDescription)
 		subviews.cellDescription.backgroundColor = .clear
@@ -153,14 +136,22 @@ private extension SettingsViewController {
 		subviews.showCountBomb.translatesAutoresizingMaskIntoConstraints = false
 	}
 
-	@objc
-	private func setCountCell() {
-		presenter.setCountCell(parametrs: Int(subviews.countCellSlider.value))
+	@objc private func updateCellCount() {
+		subviews.showCountCell.text =
+			"\(AlgoritmFieldParametrs.countCell(properties: Int(subviews.countCellSlider.value)))"
+	}
+	@objc private func updateBombCount() {
+		subviews.showCountBomb.text = "\(Int(subviews.countBombSlider.value))"
 	}
 
 	@objc
-	private func showCountBombFunc() {
-		presenter.setCountBomb(countBomb: Int(subviews.countBombSlider.value))
+	private func setCountCell() {
+		presenter.updateCurrentComplexity(\.cellCount, value: Int(subviews.countCellSlider.value))
+	}
+
+	@objc
+	private func setCountBomb() {
+		presenter.updateCurrentComplexity(\.bombCount, value: Int(subviews.countBombSlider.value))
 	}
 
 	func setupConstraints() {
@@ -226,12 +217,12 @@ private extension SettingsViewController {
 	}
 }
 
-extension SettingsViewController: UpdatingViewSettings {
-	func updateCountBomb(countBomb: Int) {
-		subviews.showCountBomb.text = "\(countBomb)"
-	}
-
-	func updateCountCell(countCell: Int) {
-		subviews.showCountCell.text = "\(countCell)"
+extension SettingsViewController: ISettingsView {
+	func updateData() {
+		subviews.countCellSlider.setValue(Float(presenter.currentComplexity.cellCount), animated: true)
+		subviews.countBombSlider.setValue(Float(presenter.currentComplexity.bombCount), animated: true)
+		subviews.showCountBomb.text = "\(presenter.currentComplexity.bombCount)"
+		subviews.showCountCell.text =
+			"\(AlgoritmFieldParametrs.countCell(properties: presenter.currentComplexity.cellCount))"
 	}
 }

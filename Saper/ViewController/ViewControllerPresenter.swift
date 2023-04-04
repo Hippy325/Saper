@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol IViewControllerPresenter {
+protocol IViewControllerPresenter: ISetPlayingOptions {
 	func newField()
 	func newMatrix(cell: Int, bomb: Int)
 	func changeType() -> Bool
@@ -83,4 +83,8 @@ extension ViewControllerPresenter: ILiaisonPresenter {
 			seconds += 1
 		}
 	}
+}
+
+extension ViewControllerPresenter: ISetPlayingOptions {
+	func updateSettings(countCell: Int, countBomb: Int, row: Int, collumn: Int) {}
 }
