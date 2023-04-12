@@ -16,17 +16,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		willConnectTo session: UISceneSession,
 		options connectionOptions: UIScene.ConnectionOptions
 	) {
-		let viewConreollerRouter = ViewControllerRouter(settingsViewController: SettingsViewControllerAssembly())
+		let viewConreollerRouter = GameViewControllerRouter(settingsViewController: SettingsViewControllerAssembly())
 		let lision = Liaison()
 		let creator = CreatingCells(liaison: lision)
 		let creatingStackView = CreatingStackView(creatingCells: creator)
-		let presenter = ViewControllerPresenter(liaison: lision)
+		let presenter = GameViewControllerPresenter(liaison: lision, router: viewConreollerRouter)
 		lision.setPresenter(presenter: presenter)
 
-		let viewController = ViewController(
+		let viewController = GameViewController(
 			creatingStackView: creatingStackView,
-			presenter: presenter,
-			router: viewConreollerRouter
+			presenter: presenter
 		)
 		presenter.view = viewController
 		viewConreollerRouter.viewController = viewController

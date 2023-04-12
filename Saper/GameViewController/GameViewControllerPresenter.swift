@@ -7,10 +7,18 @@
 
 import Foundation
 
-protocol IViewControllerPresenter: ISetPlayingOptions {
+struct FieldParametrs {
+	let countCell: Int
+	let countBomb: Int
+	let countCollumn: Int
+	let countRow: Int
+}
+
+protocol IGameViewControllerPresenter {
 	func newField()
 	func newMatrix(cell: Int, bomb: Int)
 	func changeType() -> Bool
+	func goToSettingsScreen()
 }
 
 protocol IPresenterView: AnyObject {
@@ -19,22 +27,25 @@ protocol IPresenterView: AnyObject {
 	func updatePlaingView(countCell: Int)
 }
 
-final class ViewControllerPresenter {
+final class GameViewControllerPresenter {
 	private var counterBomb: Int = 10 {
 		didSet {
 			view?.updateCounterBomb(count: counterBomb)
 		}
 	}
 	private let liaison: IliaisonMatrix
+	private let router: IGameViewControllerRouter
 	weak var view: IPresenterView?
 	private var timer: Timer?
+	private var fieldParametrs: FieldParametrs?
 
-	init(liaison: IliaisonMatrix) {
+	init(liaison: IliaisonMatrix, router: IGameViewControllerRouter) {
 		self.liaison = liaison
+		self.router = router
 	}
 }
 
-extension ViewControllerPresenter: IViewControllerPresenter {
+extension GameViewControllerPresenter: IGameViewControllerPresenter {
 	func newField() {
 		liaison.newField()
 	}
@@ -51,9 +62,13 @@ extension ViewControllerPresenter: IViewControllerPresenter {
 	func getCurrentCountBomb() -> Int {
 		return counterBomb
 	}
+
+	func goToSettingsScreen() {
+		router.pushSettingsScreen(listner: self)
+	}
 }
 
-extension ViewControllerPresenter: ILiaisonPresenter {
+extension GameViewControllerPresenter: ILiaisonPresenter {
 	func countBombStart(count: Int) {
 		counterBomb = count
 	}
@@ -85,6 +100,8 @@ extension ViewControllerPresenter: ILiaisonPresenter {
 	}
 }
 
-extension ViewControllerPresenter: ISetPlayingOptions {
-	func updateSettings(countCell: Int, countBomb: Int, row: Int, collumn: Int) {}
+extension GameViewControllerPresenter: ISetPlayingOptions {
+	func updateSettings(fieldParametrs: FieldParametrs) {
+		self.fieldParametrs = fieldParametrs
+	}
 }

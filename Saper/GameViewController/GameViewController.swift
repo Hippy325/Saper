@@ -12,16 +12,17 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class GameViewController: UIViewController {
 
 	private let creatingStackView: ICreatingStackView
-	private let presenter: IViewControllerPresenter
-	private let router: IViewControllerRouter
+	private let presenter: IGameViewControllerPresenter
 
-	init(creatingStackView: ICreatingStackView, presenter: IViewControllerPresenter, router: IViewControllerRouter) {
+	init(
+		creatingStackView: ICreatingStackView,
+		presenter: IGameViewControllerPresenter
+	) {
 		self.creatingStackView = creatingStackView
 		self.presenter = presenter
-		self.router = router
 		super.init(nibName: nil, bundle: nil)
 	}
 	required init?(coder: NSCoder) {
@@ -104,7 +105,7 @@ class ViewController: UIViewController {
 	}
 
 	@objc func settingsScreen() {
-		router.pushSettingsScreen(screen: presenter)
+		presenter.goToSettingsScreen()
 	}
 
 	@objc
@@ -180,14 +181,14 @@ class ViewController: UIViewController {
 	}
 }
 
-private extension ViewController {
+private extension GameViewController {
 	func getHeight(width: CGFloat) -> CGFloat {
 		let xFactor = (width - 24) / 7
 		return (33 + 11*xFactor)
 	}
 }
 
-extension ViewController: IPresenterView {
+extension GameViewController: IPresenterView {
 	func updateCounterBomb(count: Int) {
 		var text = "\(count)"
 		if count < 100 {
