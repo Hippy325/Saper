@@ -8,11 +8,11 @@
 import Foundation
 import UIKit
 
-protocol IGameViewControllerRouter {
+protocol IGameRouter {
 	func pushSettingsScreen(listner: ISetPlayingOptions)
 }
 
-final class GameViewControllerRouter {
+final class GameRouter {
 	private let settingsViewController: ISettingsViewControllerAssembly
 	var viewController: UIViewController?
 
@@ -21,7 +21,7 @@ final class GameViewControllerRouter {
 	}
 }
 
-extension GameViewControllerRouter: IGameViewControllerRouter {
+extension GameRouter: IGameRouter {
 	func pushSettingsScreen(listner: ISetPlayingOptions) {
 		guard let viewController = viewController else { return }
 		viewController.present(settingsViewController.assembly(listner: listner), animated: true)

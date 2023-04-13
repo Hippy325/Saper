@@ -33,7 +33,7 @@ protocol ISettingsView {
 }
 
 protocol ISetPlayingOptions {
-	func updateSettings(fieldParametrs: FieldParametrs)
+	func updateSettings(fieldParametrs: MatrixOptions)
 }
 
 final class SettingsPresenter: ISettingsPresenter {
@@ -82,12 +82,13 @@ final class SettingsPresenter: ISettingsPresenter {
 	}
 
 	func backToPlayingScreen() {
-		router.backToPlaingScreen()
-		playingScreen.updateSettings(fieldParametrs: FieldParametrs(
-			countCell: AlgoritmFieldParametrs.countCell(properties: currentComplexity.cellCount),
-			countBomb: currentComplexity.bombCount,
-			countCollumn: AlgoritmFieldParametrs.countCollumn(properties: currentComplexity.cellCount),
-			countRow: AlgoritmFieldParametrs.countRow(properties: currentComplexity.cellCount))
+		playingScreen.updateSettings(
+			fieldParametrs: MatrixOptions(
+				countCell: AlgoritmFieldParametrs.countCell(properties: currentComplexity.cellCount),
+				countBomb: currentComplexity.bombCount,
+				countCollumn: AlgoritmFieldParametrs.countCollumn(properties: currentComplexity.cellCount),
+				countRow: AlgoritmFieldParametrs.countRow(properties: currentComplexity.cellCount))
 		)
+		router.backToPlaingScreen()
 	}
 }

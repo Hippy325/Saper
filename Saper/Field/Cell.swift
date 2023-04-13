@@ -10,9 +10,10 @@ import UIKit
 
 final class Cell: UIButton {
 	private var isClicked: Bool = false
-	private weak var liaison: ILiaison?
+	private weak var liaison: ILiaisonCells?
 	private let shapeLayer = CAShapeLayer()
-	convenience init(tag: Int, liaison: ILiaison) {
+
+	convenience init(tag: Int, liaison: ILiaisonCells) {
 		self.init()
 		self.liaison = liaison
 		self.setupCell(tag)

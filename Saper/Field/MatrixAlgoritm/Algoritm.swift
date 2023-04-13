@@ -6,6 +6,45 @@
 //
 
 import Foundation
+import SwiftUI
+
+@_functionBuilder final class MatrixPositionResultBuilder {
+	static func buildBlock(_ components: [MatrixPosition]...) -> [MatrixPosition] {
+		return components.flatMap { $0 }
+	}
+
+	static func buildExpression(_ expression: MatrixPosition) -> [MatrixPosition] {
+		[expression]
+	}
+
+	static func buildExpression(_ expression: [MatrixPosition]) -> [MatrixPosition] {
+		expression
+	}
+
+	static func buildOptional(_ components: [MatrixPosition]?) -> [MatrixPosition] {
+		components ?? []
+	}
+
+	static func buildIf(_ content: [MatrixPosition]?) -> [MatrixPosition] {
+		content ?? []
+	}
+
+	static func buildEither(first: [MatrixPosition]) -> [MatrixPosition] {
+		first
+	}
+
+	static func buildEither(second: [MatrixPosition]) -> [MatrixPosition] {
+		second
+	}
+}
+
+extension Algoritm {
+	func checkResultBuilder(@MatrixPositionResultBuilder positions: () -> [MatrixPosition]) {
+		positions().forEach {
+			check(matrixPosition: $0)
+		}
+	}
+}
 
 final class Algoritm {
 	private var number: Int = 0
@@ -32,26 +71,29 @@ final class Algoritm {
 	}
 
 	private func centerSide() {
-		check(matrixPosition: matrixPosition.moveLeft())
-		check(matrixPosition: matrixPosition.moveRight())
-		if matrixPosition.row == 0 {
-			check(matrixPosition: matrixPosition.moveDown())
-			check(matrixPosition: matrixPosition.moveLeftDown())
-			check(matrixPosition: matrixPosition.moveRightDown())
-		} else {
-			if matrixPosition.row == 10 {
-				check(matrixPosition: matrixPosition.moveUp())
-				check(matrixPosition: matrixPosition.moveLeftUp())
-				check(matrixPosition: matrixPosition.moveRightUp())
+		checkResultBuilder {
+			matrixPosition.moveLeft()
+			matrixPosition.moveRight()
+			if matrixPosition.row == 0 {
+				matrixPosition.moveLeftDown()
+				matrixPosition.moveRightDown()
+				matrixPosition.moveDown()
 			} else {
-				check(matrixPosition: matrixPosition.moveUp())
-				check(matrixPosition: matrixPosition.moveLeftUp())
-				check(matrixPosition: matrixPosition.moveRightUp())
-				check(matrixPosition: matrixPosition.moveDown())
-				check(matrixPosition: matrixPosition.moveLeftDown())
-				check(matrixPosition: matrixPosition.moveRightDown())
+				if matrixPosition.row == 10 {
+					matrixPosition.moveUp()
+					matrixPosition.moveLeftUp()
+					matrixPosition.moveRightUp()
+				} else {
+					matrixPosition.moveUp()
+					matrixPosition.moveLeftUp()
+					matrixPosition.moveRightUp()
+					matrixPosition.moveDown()
+					matrixPosition.moveLeftDown()
+					matrixPosition.moveRightDown()
+				}
 			}
 		}
+
 	}
 
 	private func leftSide() {
@@ -157,54 +199,3 @@ extension MatrixPosition {
 		moveRight().moveDown()
 	}
 }
-
-// protocol Default {
-//	static var `default`: Self { get }
-// }
-//
-// struct MatrixSnapshot<T: Default>: Sequence {
-//
-//	init(rowCapacity: UInt, columnCapacity: UInt) {
-//		self.rowCapacity = rowCapacity
-//		self.columnCapacity = columnCapacity
-//	}
-//
-//	var matrixValues: [MatrixPosition: T] = [:]
-//
-//	let rowCapacity: UInt
-//	let columnCapacity: UInt
-//
-//	subscript(position: MatrixPosition) -> T {
-//		get {
-//			matrixValues[position] ?? .default
-//		}
-//		set(newValue) {
-//			guard position.row <= rowCapacity, position.column <= columnCapacity else { return }
-//			matrixValues[position] = newValue
-//		}
-//	}
-//
-//	var startPosition: MatrixPosition {
-//		MatrixPosition(row: 0, column: 0)
-//	}
-//
-//	func makeIterator() -> some IteratorProtocol {
-//		var position: MatrixPosition? = startPosition
-//		return AnyIterator<T> {
-//			guard let unwrappedPosition = position else { return nil }
-//			let value = self[unwrappedPosition]
-//			position = increment(position: unwrappedPosition)
-//			return value
-//		}
-//	}
-//
-//	func increment(position: MatrixPosition) -> MatrixPosition? {
-//		if position.column == columnCapacity, position.row == rowCapacity { return nil }
-//
-//		if position.row == rowCapacity {
-//			return MatrixPosition(row: 0, column: position.column + 1)
-//		} else {
-//			return MatrixPosition(row: position.row + 1, column: position.column)
-//		}
-//	}
-// }

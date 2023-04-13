@@ -13,22 +13,6 @@
 import UIKit
 
 class GameViewController: UIViewController {
-
-	private let creatingStackView: ICreatingStackView
-	private let presenter: IGameViewControllerPresenter
-
-	init(
-		creatingStackView: ICreatingStackView,
-		presenter: IGameViewControllerPresenter
-	) {
-		self.creatingStackView = creatingStackView
-		self.presenter = presenter
-		super.init(nibName: nil, bundle: nil)
-	}
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
-
 	private struct Subviews {
 		let timer = UILabel()
 		let counterBomb = UILabel()
@@ -36,25 +20,43 @@ class GameViewController: UIViewController {
 		let settings = UIButton()
 		let restart = UIButton()
 	}
+
+	private let factoryStackView: IFactoryStackView
+	private let presenter: IGamePresenter
+
 	private let subviews = Subviews()
 	private let topView = UIView()
-	private let plaingView = UIView()
+	private var plaingView = UIView()
 	private var flag = Flag()
+
+	init(
+		factoryStackView: IFactoryStackView,
+		presenter: IGamePresenter
+	) {
+		self.factoryStackView = factoryStackView
+		self.presenter = presenter
+		super.init(nibName: nil, bundle: nil)
+	}
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .black
-		presenter.newMatrix(cell: 77, bomb: 10)
+		presenter.newMatrix()
 		setupTopView()
 		setupSubviews()
 		setupPlaingView()
+
+		setupTopViewLayout()
+		setupPlaingViewLayout()
 	}
 
 // MARK: - setup all View and subview
 
 	private func setupTopView() {
 		view.addSubview(topView)
-		topView.translatesAutoresizingMaskIntoConstraints = false
 
 		topView.backgroundColor = .lightGray
 		topView.layer.borderColor = UIColor.darkGray.cgColor
@@ -69,12 +71,6 @@ class GameViewController: UIViewController {
 	}
 
 	private func setupSubviews() {
-		subviews.settings.translatesAutoresizingMaskIntoConstraints = false
-		subviews.counterBomb.translatesAutoresizingMaskIntoConstraints = false
-		subviews.restart.translatesAutoresizingMaskIntoConstraints = false
-		subviews.timer.translatesAutoresizingMaskIntoConstraints = false
-		subviews.typeOfPress.translatesAutoresizingMaskIntoConstraints = false
-
 		subviews.settings.layer.addSublayer(Settings().setings())
 		subviews.settings.addTarget(self, action: #selector(settingsScreen), for: .touchUpInside)
 
@@ -102,6 +98,7 @@ class GameViewController: UIViewController {
 		view.addSubview(plaingView)
 		plaingView.translatesAutoresizingMaskIntoConstraints = false
 		plaingView.backgroundColor = .lightGray
+		setupPlaingViewLayout()
 	}
 
 	@objc func settingsScreen() {
@@ -111,7 +108,6 @@ class GameViewController: UIViewController {
 	@objc
 	private func newField() {
 		presenter.newField()
-		updateTime(time: 0)
 	}
 
 	@objc
@@ -126,44 +122,40 @@ class GameViewController: UIViewController {
 
 // MARK: - setup Layout
 
-	override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
-		setupTopViewLayout()
-		setupPlaingViewLayout()
-	}
-
 	private func setupTopViewLayout() {
+		topView.translatesAutoresizingMaskIntoConstraints = false
+		subviews.settings.translatesAutoresizingMaskIntoConstraints = false
+		subviews.counterBomb.translatesAutoresizingMaskIntoConstraints = false
+		subviews.restart.translatesAutoresizingMaskIntoConstraints = false
+		subviews.timer.translatesAutoresizingMaskIntoConstraints = false
+		subviews.typeOfPress.translatesAutoresizingMaskIntoConstraints = false
+
 		NSLayoutConstraint.activate([
 			topView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
 			topView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
 			topView.heightAnchor.constraint(equalToConstant: 60),
-			topView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-		])
-		NSLayoutConstraint.activate([
+			topView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
 			subviews.settings.widthAnchor.constraint(equalToConstant: 45),
 			subviews.settings.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
 			subviews.settings.heightAnchor.constraint(equalToConstant: 45),
-			subviews.settings.leftAnchor.constraint(equalTo: topView.leftAnchor, constant: 10)
-		])
-		NSLayoutConstraint.activate([
+			subviews.settings.leftAnchor.constraint(equalTo: topView.leftAnchor, constant: 10),
+
 			subviews.restart.centerXAnchor.constraint(equalTo: topView.centerXAnchor),
 			subviews.restart.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
 			subviews.restart.heightAnchor.constraint(equalToConstant: 45),
-			subviews.restart.widthAnchor.constraint(equalToConstant: 45)
-		])
-		NSLayoutConstraint.activate([
+			subviews.restart.widthAnchor.constraint(equalToConstant: 45),
+
 			subviews.typeOfPress.widthAnchor.constraint(equalToConstant: 45),
 			subviews.typeOfPress.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
 			subviews.typeOfPress.heightAnchor.constraint(equalToConstant: 45),
-			subviews.typeOfPress.rightAnchor.constraint(equalTo: topView.rightAnchor, constant: -10)
-		])
-		NSLayoutConstraint.activate([
+			subviews.typeOfPress.rightAnchor.constraint(equalTo: topView.rightAnchor, constant: -10),
+
 			subviews.counterBomb.rightAnchor.constraint(equalTo: subviews.restart.leftAnchor, constant: -4),
 			subviews.counterBomb.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
 			subviews.counterBomb.heightAnchor.constraint(equalToConstant: 45),
-			subviews.counterBomb.leftAnchor.constraint(equalTo: subviews.settings.rightAnchor, constant: 4)
-		])
-		NSLayoutConstraint.activate([
+			subviews.counterBomb.leftAnchor.constraint(equalTo: subviews.settings.rightAnchor, constant: 4),
+
 			subviews.timer.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
 			subviews.timer.heightAnchor.constraint(equalToConstant: 45),
 			subviews.timer.leftAnchor.constraint(lessThanOrEqualTo: subviews.restart.rightAnchor, constant: 4),
@@ -188,33 +180,33 @@ private extension GameViewController {
 	}
 }
 
-extension GameViewController: IPresenterView {
-	func updateCounterBomb(count: Int) {
-		var text = "\(count)"
-		if count < 100 {
-			text = "0\(count)"
-		}
-		if count < 10 {
-			text = "00\(count)"
-		}
-		if count < 0 {
-			text = "\(count)"
-		}
-		subviews.counterBomb.text = text
+extension GameViewController: IGameView {
+
+	func updateCounterBomb(bomb: String) {
+		subviews.counterBomb.text = bomb
 	}
 
-	func updateTime(time: Int) {
-		var timeString = "\(time)"
-		if time < 100 {
-			timeString = "0\(time)"
-		}
-		if time < 10 {
-			timeString = "00\(time)"
-		}
-		self.subviews.timer.text = timeString
+	func updateTime(time: String) {
+		self.subviews.timer.text = time
 	}
 
-	func updatePlaingView(countCell: Int) {
-		creatingStackView.creatingHoririsontalyStacks(view: plaingView, count: countCell)
+	func updatePlaingView(countCell: Int, countCollumn: Int, countRow: Int) {
+		factoryStackView.makeHorisontalStack(
+			playingView: plaingView,
+			countCell: countCell,
+			countCollumn: countCollumn,
+			countRow: countRow
+		)
+	}
+}
+
+extension UIView {
+	func pin(to view: UIView, edges: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
+		[
+			topAnchor.constraint(equalTo: view.topAnchor, constant: edges.top),
+			leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: edges.left),
+			trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: edges.right),
+			bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: edges.bottom)
+		]
 	}
 }
