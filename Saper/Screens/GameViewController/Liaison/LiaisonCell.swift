@@ -23,7 +23,7 @@ final class Liaison {
 
 	private var arrayCell: [Cell] = []
 	private var arrayTap: [TypePress] = []
-	private var matrix = Matrix(countBomb: 10, countCell: 77)
+	private var matrix = Matrix(matrixOptions: MatrixOptions(countCell: 77, countBomb: 10, countCollumn: 7, countRow: 11))
 	private weak var presenter: ILiaisonListner?
 	private var gameParametrs = GameParametrs()
 
@@ -33,7 +33,7 @@ final class Liaison {
 
 	private func pressOpen(position: Int) {
 		gameParametrs.countPress += 1
-		let state = matrix.getMatrix()[position]
+		let state = matrix.getField()[position]
 		arrayCell[position].actionChange(state: state)
 
 		if state == nil {
@@ -69,10 +69,14 @@ final class Liaison {
 	}
 
 	private func openAround(position: Int) {
-		let algoritmOpen = AlgoritmOpen()
-		algoritmOpen.open(startPosition: position) { (position) in
+		let algoritmOpen = AlgoritmOpen(
+			countCollumn: matrix.matrixOptions.countCollumn,
+			countRow: matrix.matrixOptions.countRow,
+			position: position
+		)
+		algoritmOpen.open { (position) in
 			if !arrayCell[position].clicked() {
-				arrayCell[position].actionChange(state: matrix.getMatrix()[position])
+				arrayCell[position].actionChange(state: matrix.getField()[position])
 				arrayTap[position] = .opened
 				gameParametrs.countPress += 1
 			}
@@ -89,7 +93,7 @@ extension Liaison: ILiaisonCells {
 
 	func notification(position: Int) {
 		if gameParametrs.isNew {
-			matrix.createNewMatrix(startPosition: position)
+			matrix.createNewField(startPosition: position)
 			presenter?.startTimer()
 		}
 
@@ -140,10 +144,10 @@ extension Liaison: ILiaisonMatrix {
 		}
 	}
 	// MARK: - TO DO
-	func newMatrix(countCell: Int, countBomb: Int) {
+	func newMatrix(matrixOptions: MatrixOptions) {
 		gameParametrs.isNew = true
-		self.matrix = Matrix(countBomb: countBomb, countCell: countCell)
-		self.gameParametrs.countCellAndBomb = (countCell, countBomb)
+		self.matrix = Matrix(matrixOptions: matrixOptions)
+		self.gameParametrs.countCellAndBomb = (matrixOptions.countCell, matrixOptions.countBomb)
 	}
 
 	func changePress() -> Bool {

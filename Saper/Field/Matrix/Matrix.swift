@@ -1,5 +1,5 @@
 //
-//  MatrixField.swift
+//  Matrix.swift
 //  Saper
 //
 //  Created by User on 13.10.2022.
@@ -8,8 +8,10 @@
 import Foundation
 
 protocol IMatrix {
-	func createNewMatrix(startPosition: Int)
-	func getMatrix() -> [Int?]
+	var matrixOptions: MatrixOptions { get }
+
+	func createNewField(startPosition: Int)
+	func getField() -> [Int?]
 }
 
 enum State {
@@ -18,22 +20,23 @@ enum State {
 }
 
 final class Matrix: IMatrix {
-	private let countBomb: Int
-	private let countCell: Int
+	var matrixOptions: MatrixOptions
 	private var mainMatrix: [Int?] = []
-	private var start: Int?
+	private lazy var algorithmNumbers = AlgorithmNumbers(
+		countCollumn: matrixOptions.countCollumn,
+		countRow: matrixOptions.countRow
+	)
 
-	init(countBomb: Int, countCell: Int) {
-		self.countBomb = countBomb
-		self.countCell = countCell
+	init(matrixOptions: MatrixOptions) {
+		self.matrixOptions = matrixOptions
 	}
 
 	private func getStateMatrix(startPosition: Int) -> [State] {
 		var matrix: [State] = []
-		var countB = countBomb
-		var countC = countCell
+		var countB = matrixOptions.countBomb
+		var countC = matrixOptions.countCell
 
-		for position in 0...countCell {
+		for position in 0...matrixOptions.countCell {
 			if position != startPosition {
 				let state: State
 				if countB == 0 {
@@ -53,21 +56,17 @@ final class Matrix: IMatrix {
 		return matrix
 	}
 
-	func createNewMatrix(startPosition: Int) {
+	func createNewField(startPosition: Int) {
 		var matematicMatrix: [Int?] = []
 		let stateMatrix: [State] = getStateMatrix(startPosition: startPosition)
-		for index in 0...(countCell - 1) {
+		for index in 0...(matrixOptions.countCell - 1) {
 			let number = numberForMatrix(position: index, matrix: stateMatrix)
 			matematicMatrix.append(number)
 		}
 		mainMatrix = matematicMatrix
 	}
 
-	func getMatrix() -> [Int?] {
-		if mainMatrix == [] {
-			guard let start = start else { return [] }
-			createNewMatrix(startPosition: start)
-		}
+	func getField() -> [Int?] {
 		return mainMatrix
 	}
 }
@@ -78,8 +77,7 @@ extension Matrix {
 			return nil
 		}
 		var number = 0
-		let algoritm = Algoritm(matrix: matrix, posotion: position)
-		number = algoritm.main()
+		number = algorithmNumbers.main(position: position, matrix: matrix)
 		return number
 	}
 

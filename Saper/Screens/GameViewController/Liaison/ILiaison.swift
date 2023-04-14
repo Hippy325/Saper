@@ -22,7 +22,7 @@ protocol ILiaisonCells: AnyObject {
 }
 
 protocol ILiaisonMatrix {
-	func newMatrix(countCell: Int, countBomb: Int)
+	func newMatrix(matrixOptions: MatrixOptions)
 	func newField()
 	func changePress() -> Bool
 }
