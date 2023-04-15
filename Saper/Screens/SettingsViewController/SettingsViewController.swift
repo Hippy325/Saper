@@ -20,6 +20,7 @@ final class SettingsViewController: UIViewController {
 		let cellDescription = UILabel()
 		let bombDescription = UILabel()
 	}
+
 	private let subviews = Subviews()
 	private let presenter: ISettingsPresenter
 
@@ -63,7 +64,6 @@ private extension SettingsViewController {
 			for: .normal
 		)
 		subviews.complexity.backgroundColor = .darkGray
-		subviews.complexity.selectedSegmentIndex = 0
 		setActionComplexity()
 		counterSubviews()
 		updateData()
@@ -89,7 +89,6 @@ private extension SettingsViewController {
 			self.presenter.set(complexityVariant: .expert)
 		}
 		subviews.complexity.setAction(actionExpert, forSegmentAt: 3)
-		updateData()
 	}
 
 	private func counterSubviews() {

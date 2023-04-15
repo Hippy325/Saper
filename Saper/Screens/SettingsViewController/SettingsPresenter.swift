@@ -34,28 +34,22 @@ protocol ISettingsView {
 	func updateData()
 }
 
-protocol ISetPlayingOptions {
-	func updateSettings(fieldParametrs: MatrixOptions)
+protocol IPlayingScreen {
+	func updateSettings(fieldParametrs: MatrixOptions, properties: Int)
+	func currentComplexity() -> SettingsComplexity
 }
 
 final class SettingsPresenter: ISettingsPresenter {
-	func updateCurrentComplexity(bomb: Int) {
-		currentComplexity.bombCount = bomb
-	}
-
-	func updateCurrentComplexity(cell: Int) {
-		currentComplexity.cellCount = cell
-	}
-
 	var view: ISettingsView?
-	private let playingScreen: ISetPlayingOptions
+	private let playingScreen: IPlayingScreen
 	private let router: ISettingsRouter
+
 	lazy var currentComplexity = SettingsComplexity(
-		cellCount: cellCountRange.lowerBound,
-		bombCount: bombCountRange.lowerBound
+		cellCount: playingScreen.currentComplexity().cellCount,
+		bombCount: playingScreen.currentComplexity().bombCount
 	)
 
-	init(router: ISettingsRouter, playingScreen: ISetPlayingOptions) {
+	init(router: ISettingsRouter, playingScreen: IPlayingScreen) {
 		self.router = router
 		self.playingScreen = playingScreen
 	}
@@ -92,8 +86,17 @@ final class SettingsPresenter: ISettingsPresenter {
 				countCell: AlgoritmFieldParametrs.countCell(properties: currentComplexity.cellCount),
 				countBomb: currentComplexity.bombCount,
 				countCollumn: AlgoritmFieldParametrs.countCollumn(properties: currentComplexity.cellCount),
-				countRow: AlgoritmFieldParametrs.countRow(properties: currentComplexity.cellCount))
+				countRow: AlgoritmFieldParametrs.countRow(properties: currentComplexity.cellCount)),
+			properties: currentComplexity.cellCount
 		)
 		router.backToPlaingScreen()
+	}
+
+	func updateCurrentComplexity(bomb: Int) {
+		currentComplexity.bombCount = bomb
+	}
+
+	func updateCurrentComplexity(cell: Int) {
+		currentComplexity.cellCount = cell
 	}
 }

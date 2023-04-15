@@ -33,6 +33,7 @@ final class GamePresenter {
 	weak var view: IGameView?
 	private var timer: Timer?
 	private var fieldParametrs = MatrixOptions(countCell: 77, countBomb: 10, countCollumn: 7, countRow: 11)
+	private var properties: Int = 77
 
 	init(liaison: ILiaisonMatrix, router: IGameRouter) {
 		self.liaison = liaison
@@ -127,9 +128,14 @@ extension GamePresenter: ILiaisonListner {
 	}
 }
 
-extension GamePresenter: ISetPlayingOptions {
-	func updateSettings(fieldParametrs: MatrixOptions) {
+extension GamePresenter: IPlayingScreen {
+	func currentComplexity() -> SettingsComplexity {
+		SettingsComplexity(cellCount: properties, bombCount: fieldParametrs.countBomb)
+	}
+
+	func updateSettings(fieldParametrs: MatrixOptions, properties: Int) {
 		self.fieldParametrs = fieldParametrs
+		self.properties = properties
 		newMatrix()
 	}
 }

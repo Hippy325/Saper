@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol IGameRouter {
-	func pushSettingsScreen(listner: ISetPlayingOptions)
+	func pushSettingsScreen(listner: IPlayingScreen)
 }
 
 final class GameRouter {
@@ -22,7 +22,7 @@ final class GameRouter {
 }
 
 extension GameRouter: IGameRouter {
-	func pushSettingsScreen(listner: ISetPlayingOptions) {
+	func pushSettingsScreen(listner: IPlayingScreen) {
 		guard let viewController = viewController else { return }
 		viewController.present(settingsViewController.assembly(listner: listner), animated: true)
 	}
