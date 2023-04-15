@@ -77,6 +77,7 @@ extension GamePresenter: IGamePresenter {
 	}
 
 	func newMatrix() {
+		view?.updateTime(time: "000")
 		liaison.newMatrix(matrixOptions: fieldParametrs)
 		view?.updatePlaingView(
 			countCell: fieldParametrs.countCell,

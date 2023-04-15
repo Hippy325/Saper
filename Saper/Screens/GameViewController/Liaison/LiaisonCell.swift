@@ -148,6 +148,10 @@ extension Liaison: ILiaisonMatrix {
 		gameParametrs.isNew = true
 		self.matrix = Matrix(matrixOptions: matrixOptions)
 		self.gameParametrs.countCellAndBomb = (matrixOptions.countCell, matrixOptions.countBomb)
+		presenter?.countBombStart(count: matrixOptions.countBomb)
+		presenter?.stopTimer(isWin: false)
+		gameParametrs.isNew = true
+		gameParametrs.countPress = 0
 	}
 
 	func changePress() -> Bool {
