@@ -9,24 +9,35 @@ import Foundation
 import UIKit
 
 final class Cell: UIButton {
+
+	enum SizeOf {
+		case small
+		case average
+		case big
+		case huge
+	}
+
 	private var isClicked: Bool = false
 	private weak var liaison: ILiaisonCells?
 	private let shapeLayer = CAShapeLayer()
+	private var sizeOfCell: SizeOf?
 
-	convenience init(tag: Int, liaison: ILiaisonCells) {
+	convenience init(tag: Int, liaison: ILiaisonCells, sizeOfCell: SizeOf) {
 		self.init()
 		self.liaison = liaison
-		self.setupCell(tag)
+		self.setupCell(tag, sizeOfCell: sizeOfCell)
 		self.layer.addSublayer(shapeLayer)
 	}
 
-	private func setupCell(_ tag: Int) {
+	private func setupCell(_ tag: Int, sizeOfCell: SizeOf) {
+		self.sizeOfCell = sizeOfCell
 		liaison?.appendCell(cell: self)
 		backgroundColor = UIColor.gray
-		self.layer.borderColor = UIColor.darkGray.cgColor
+		layer.borderColor = UIColor.darkGray.cgColor
+		setBorderWidth(sizeOfCell: sizeOfCell)
+		setTextFont(sizeOfCell: sizeOfCell)
 		self.tag = tag
-		layer.borderWidth = 5
-		self.addTarget(self, action: #selector(f), for: .touchUpInside)
+		addTarget(self, action: #selector(f), for: .touchUpInside)
 	}
 
 	@objc private func f() {
@@ -40,32 +51,24 @@ final class Cell: UIButton {
 			self.backgroundColor = .red
 			return
 		}
-		self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 35)
-		self.setTitle("\(state)", for: .normal)
-		switch state {
-		case 0:
-			self.setTitleColor(.white, for: .normal)
-		case 1:
-			self.setTitleColor(.blue, for: .normal)
-		case 2:
-			self.setTitleColor(.green, for: .normal)
-		case 3:
-			self.setTitleColor(.red, for: .normal)
-		case 4:
-			self.setTitleColor(.purple, for: .normal)
-		default:
-			self.setTitleColor(.black, for: .normal)
-		}
-		self.backgroundColor = .white
+		setTitle("\(state)", for: .normal)
+		setTextColor(state: state)
+		titleLabel?.adjustsFontSizeToFitWidth = true
+		titleLabel?.numberOfLines = 1
+
+		backgroundColor = .white
 		return
 	}
 
 	func initalState() {
-		self.backgroundColor = .gray
-		layer.borderWidth = 5
-		self.setTitle("", for: .normal)
-		self.isEnabled = true
+		backgroundColor = .gray
+		setTitle("", for: .normal)
+		isEnabled = true
 		isClicked = false
+
+		guard let sizeOfCell = sizeOfCell else { return }
+		setBorderWidth(sizeOfCell: sizeOfCell)
+		setTextFont(sizeOfCell: sizeOfCell)
 	}
 
 	func clicked() -> Bool {
@@ -91,5 +94,48 @@ final class Cell: UIButton {
 
 	func deleteFlag() {
 		shapeLayer.path = CGMutablePath()
+	}
+
+	private func setTextFont(sizeOfCell: SizeOf) {
+		switch sizeOfCell {
+		case .small:
+			self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 35)
+		case .average:
+			self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 25)
+		case .big:
+			self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+		case .huge:
+			self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
+		}
+	}
+
+	private func setTextColor(state: Int) {
+		switch state {
+		case 0:
+			self.setTitleColor(.white, for: .normal)
+		case 1:
+			self.setTitleColor(.blue, for: .normal)
+		case 2:
+			self.setTitleColor(.green, for: .normal)
+		case 3:
+			self.setTitleColor(.red, for: .normal)
+		case 4:
+			self.setTitleColor(.purple, for: .normal)
+		default:
+			self.setTitleColor(.black, for: .normal)
+		}
+	}
+
+	private func setBorderWidth(sizeOfCell: SizeOf) {
+		switch sizeOfCell {
+		case .small:
+			layer.borderWidth = 5
+		case .average:
+			layer.borderWidth = 4
+		case .big:
+			layer.borderWidth = 3
+		case .huge:
+			layer.borderWidth = 2
+		}
 	}
 }
