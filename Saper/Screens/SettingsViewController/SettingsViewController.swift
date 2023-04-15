@@ -101,7 +101,6 @@ private extension SettingsViewController {
 		subviews.countCellSlider.maximumTrackTintColor = .blue
 		subviews.countCellSlider.translatesAutoresizingMaskIntoConstraints = false
 		subviews.countCellSlider.addTarget(self, action: #selector(updateCellCount), for: .valueChanged)
-		subviews.countCellSlider.addTarget(self, action: #selector(setCountCell), for: .touchDown)
 
 		view.addSubview(subviews.countBombSlider)
 		subviews.countBombSlider.maximumValue =	Float(presenter.bombCountRange.upperBound)
@@ -111,7 +110,6 @@ private extension SettingsViewController {
 		subviews.countBombSlider.maximumTrackTintColor = .red
 		subviews.countBombSlider.translatesAutoresizingMaskIntoConstraints = false
 		subviews.countBombSlider.addTarget(self, action: #selector(updateBombCount), for: .valueChanged)
-		subviews.countBombSlider.addTarget(self, action: #selector(setCountBomb), for: .touchDown)
 
 		view.addSubview(subviews.cellDescription)
 		subviews.cellDescription.backgroundColor = .clear
@@ -139,19 +137,11 @@ private extension SettingsViewController {
 	@objc private func updateCellCount() {
 		subviews.showCountCell.text =
 			"\(AlgoritmFieldParametrs.countCell(properties: Int(subviews.countCellSlider.value)))"
+		presenter.updateCurrentComplexity(cell: Int(subviews.countCellSlider.value))
 	}
 	@objc private func updateBombCount() {
 		subviews.showCountBomb.text = "\(Int(subviews.countBombSlider.value))"
-	}
-
-	@objc
-	private func setCountCell() {
-		presenter.updateCurrentComplexity(\.cellCount, value: Int(subviews.countCellSlider.value))
-	}
-
-	@objc
-	private func setCountBomb() {
-		presenter.updateCurrentComplexity(\.bombCount, value: Int(subviews.countBombSlider.value))
+		presenter.updateCurrentComplexity(bomb: Int(subviews.countBombSlider.value))
 	}
 
 	func setupConstraints() {

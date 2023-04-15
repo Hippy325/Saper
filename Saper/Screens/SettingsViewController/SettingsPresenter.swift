@@ -23,7 +23,9 @@ protocol ISettingsPresenter {
 	var cellCountRange: ClosedRange<Int> { get }
 	var bombCountRange: ClosedRange<Int> { get }
 	var currentComplexity: SettingsComplexity { get }
-	func updateCurrentComplexity<T>(_ keyPath: WritableKeyPath<SettingsComplexity, T>, value: T)
+	func updateCurrentComplexity(bomb: Int)
+	func updateCurrentComplexity(cell: Int)
+
 	func set(complexityVariant: SettingsCoplexityVariant)
 	func backToPlayingScreen()
 }
@@ -37,6 +39,14 @@ protocol ISetPlayingOptions {
 }
 
 final class SettingsPresenter: ISettingsPresenter {
+	func updateCurrentComplexity(bomb: Int) {
+		currentComplexity.bombCount = bomb
+	}
+
+	func updateCurrentComplexity(cell: Int) {
+		currentComplexity.cellCount = cell
+	}
+
 	var view: ISettingsView?
 	private let playingScreen: ISetPlayingOptions
 	private let router: ISettingsRouter
@@ -65,11 +75,6 @@ final class SettingsPresenter: ISettingsPresenter {
 			currentComplexity.cellCount = 231
 			currentComplexity.bombCount = 180
 		}
-		view?.updateData()
-	}
-
-	func updateCurrentComplexity<T>(_ keyPath: WritableKeyPath<SettingsComplexity, T>, value: T) {
-		currentComplexity[keyPath: keyPath] = value
 		view?.updateData()
 	}
 
