@@ -53,8 +53,6 @@ final class Cell: UIButton {
 		}
 		setTitle("\(state)", for: .normal)
 		setTextColor(state: state)
-		titleLabel?.adjustsFontSizeToFitWidth = true
-		titleLabel?.numberOfLines = 1
 
 		backgroundColor = .white
 		return
@@ -75,17 +73,24 @@ final class Cell: UIButton {
 		return isClicked
 	}
 
+	func aspect(_ point: CGFloat, multiplier: CGFloat = 45) -> CGFloat {
+		(point / multiplier) * frame.height
+	}
+
 	func flag() {
 		let path = CGMutablePath()
-		path.move(to: CGPoint(x: 17, y: 10))
+		path.move(to: CGPoint(
+			x: aspect(12),
+			y: aspect(10)
+		))
 		path.addLines(between: [
-			CGPoint(x: 41, y: 20),
-			CGPoint(x: 24, y: 30),
-			CGPoint(x: 24, y: 10),
-			CGPoint(x: 22, y: 10),
-			CGPoint(x: 22, y: 45),
-			CGPoint(x: 24, y: 45),
-			CGPoint(x: 24, y: 10)
+			CGPoint(x: aspect(36), y: aspect(20)),
+			CGPoint(x: aspect(19), y: aspect(30)),
+			CGPoint(x: aspect(19), y: aspect(10)),
+			CGPoint(x: aspect(17), y: aspect(10)),
+			CGPoint(x: aspect(17), y: aspect(38)),
+			CGPoint(x: aspect(19), y: aspect(38)),
+			CGPoint(x: aspect(19), y: aspect(10))
 		])
 		path.closeSubpath()
 		shapeLayer.path = path.copy()
