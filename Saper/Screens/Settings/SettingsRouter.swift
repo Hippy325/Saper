@@ -10,6 +10,7 @@ import UIKit
 
 protocol ISettingsRouter {
 	func backToPlaingScreen()
+    func pushToProfileScreen()
 }
 
 final class SettingsRouter {
@@ -20,4 +21,8 @@ extension SettingsRouter: ISettingsRouter {
 	func backToPlaingScreen() {
 		viewController?.dismiss(animated: true, completion: nil)
 	}
+    
+    func pushToProfileScreen() {
+        
+    }
 }

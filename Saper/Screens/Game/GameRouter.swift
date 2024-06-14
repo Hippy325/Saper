@@ -13,17 +13,17 @@ protocol IGameRouter {
 }
 
 final class GameRouter {
-	private let settingsViewController: ISettingsViewControllerAssembly
+	private let settingsViewControllerAssembly: ISettingsViewControllerAssembly
 	var viewController: UIViewController?
 
-	init(settingsViewController: ISettingsViewControllerAssembly) {
-		self.settingsViewController = settingsViewController
+	init(settingsViewControllerAssembly: ISettingsViewControllerAssembly) {
+		self.settingsViewControllerAssembly = settingsViewControllerAssembly
 	}
 }
 
 extension GameRouter: IGameRouter {
 	func pushSettingsScreen(listner: IPlayingScreen) {
 		guard let viewController = viewController else { return }
-		viewController.present(settingsViewController.assembly(listner: listner), animated: true)
+		viewController.present(settingsViewControllerAssembly.assembly(listner: listner), animated: true)
 	}
 }
