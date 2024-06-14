@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		willConnectTo session: UISceneSession,
 		options connectionOptions: UIScene.ConnectionOptions
 	) {
-		let viewConreollerRouter = GameRouter(settingsViewController: SettingsViewControllerAssembly())
+		let viewConreollerRouter = GameRouter(settingsViewControllerAssembly: SettingsViewControllerAssembly())
 		let lision = Liaison()
 		let creator = CellsFactory(liaison: lision)
 		let creatingStackView = FactoryStackView(factory: creator)
@@ -33,7 +33,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		guard let scene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(windowScene: scene)
 		window?.makeKeyAndVisible()
-		window?.rootViewController = viewController
+        
+        let navigationController = UINavigationController()
+        let authViewController = AuthorizationViewControllerAssembly(navigationController: navigationController).assembly()
+        navigationController.viewControllers = [authViewController]
+        
+        window?.rootViewController = GameViewControllerAssembly().assembly()
 	}
 
 	func sceneDidDisconnect(_ scene: UIScene) {
